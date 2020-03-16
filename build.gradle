@@ -1,0 +1,31 @@
+buildscript {
+    dependencies {
+        classpath 'io.spring.gradle:dependency-management-plugin:1.0.9.RELEASE'
+        classpath "pl.allegro.tech.build:axion-release-plugin:1.11.0"
+    }
+    repositories {
+        mavenCentral()
+    }
+}
+
+defaultTasks 'clean', 'check'
+
+subprojects {
+    apply plugin: 'java-library'
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+    compileJava.options.encoding = 'UTF-8'
+    compileTestJava.options.encoding = 'UTF-8'
+    compileJava.options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation" << "-Werror"
+    compileTestJava.options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation" << "-Werror"
+
+    apply from: "${it.rootDir}/gradle/dependencies-plugin.gradle"
+    apply from: "${it.rootDir}/gradle/code-coverage-plugin.gradle"
+    apply from: "${it.rootDir}/gradle/release-plugin.gradle"
+
+    test {
+        testLogging {
+            events 'passed', 'skipped'
+        }
+    }
+}

@@ -1,0 +1,22 @@
+apply plugin: 'jacoco'
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        xml.destination file("${rootProject.buildDir}/reports/jacoco/report.xml")
+        csv.enabled false
+        html.destination file("${buildDir}/jacocoHtml")
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.8
+            }
+        }
+    }
+}
+jacocoTestCoverageVerification.mustRunAfter jacocoTestReport
+check.dependsOn jacocoTestReport, jacocoTestCoverageVerification
