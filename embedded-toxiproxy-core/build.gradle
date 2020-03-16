@@ -1,0 +1,19 @@
+
+dependencies {
+    api 'org.apache.commons:commons-lang3'
+    api 'org.apache.commons:commons-exec'
+    api 'commons-io:commons-io'
+
+    testImplementation 'eu.rekawek.toxiproxy:toxiproxy-java'
+}
+
+configurations {
+    testUtils.extendsFrom testImplementation
+}
+task jarTest(type: Jar, dependsOn: testClasses) {
+    from sourceSets.test.output
+    archiveClassifier.set("test")
+}
+artifacts {
+    testUtils jarTest
+}

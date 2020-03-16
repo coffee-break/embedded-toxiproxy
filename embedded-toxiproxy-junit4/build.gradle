@@ -1,0 +1,12 @@
+
+dependencies {
+    api project(':embedded-toxiproxy-core')
+    api('junit:junit') {
+        exclude group: 'org.hamcrest'
+    }
+    api 'eu.rekawek.toxiproxy:toxiproxy-java'
+
+    testImplementation project(path: ':embedded-toxiproxy-core', configuration: 'testUtils')
+    testImplementation 'com.h2database:h2'
+    testImplementation 'org.zapodot:embedded-db-junit'
+}

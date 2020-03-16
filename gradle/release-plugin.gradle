@@ -1,0 +1,68 @@
+apply plugin: 'pl.allegro.tech.build.axion-release'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+scmVersion {
+    tag { prefix = project.name }
+    versionIncrementer 'incrementMinor'
+}
+project.version = project.findProperty('deployVersion') ?: scmVersion.version
+group = 'io.github.coffee-break'
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = project.name
+            from components.java
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            pom {
+                name = project.name
+                description = 'Toxiproxy embedded server and client for Java integration testing'
+                url = 'https://github.com/coffee-break/embedded-toxiproxy'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'fincefid'
+                        name = 'Fatih I.'
+                        email = 'fincefid@gmail.com'
+                    }
+                }
+                scm {
+                    connection = 'git@github.com:coffee-break/embedded-toxiproxy.git'
+                    developerConnection = 'git@github.com:coffee-break/embedded-toxiproxy.git'
+                    url = 'https://github.com/coffee-break/embedded-toxiproxy'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url = 'https://oss.sonatype.org/service/local/staging/deploy/maven2'
+            credentials {
+                username project.findProperty('sonatypeUsername') ?: 'dummy'
+                password project.findProperty('sonatypePassword') ?: 'dummy'
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
+}
