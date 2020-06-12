@@ -26,7 +26,7 @@ public class ToxiproxyRuleTest {
             .build();
 
     @ClassRule
-    public static final ToxiproxyRule databaseWithToxiproxy = new ToxiproxyRule(ToxiproxyServerConfiguration.builder().build(), config, new SqlDatabaseServerRule());
+    public static final ToxiproxyRule databaseWithToxiproxy = new ToxiproxyRule(config, new SqlDatabaseServerRule());
 
     @After
     public void before() {
