@@ -1,16 +1,16 @@
 package io.github.coffeebreak.embedded.toxiproxy.junit4;
 
 import io.github.coffeebreak.embedded.toxiproxy.core.ToxiproxyServer;
-import io.github.coffeebreak.embedded.toxiproxy.core.ToxiproxyServer.ToxiproxyServerBuilder;
+import io.github.coffeebreak.embedded.toxiproxy.core.ToxiproxyServer.ToxiproxyServerConfiguration;
 import lombok.SneakyThrows;
 import org.junit.rules.ExternalResource;
 
 public class ToxiproxyServerRule extends ExternalResource {
 
-    private ToxiproxyServer toxiproxyServer;
+    private final ToxiproxyServer toxiproxyServer;
 
-    public ToxiproxyServerRule(ToxiproxyServerBuilder toxiproxyServerBuilder) {
-        this.toxiproxyServer = toxiproxyServerBuilder.build();
+    public ToxiproxyServerRule(ToxiproxyServerConfiguration configuration) {
+        this.toxiproxyServer = new ToxiproxyServer(configuration);
     }
 
     @Override

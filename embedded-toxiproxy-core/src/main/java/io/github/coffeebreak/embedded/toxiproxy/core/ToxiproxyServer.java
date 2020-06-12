@@ -3,6 +3,7 @@ package io.github.coffeebreak.embedded.toxiproxy.core;
 import io.github.coffeebreak.embedded.toxiproxy.core.util.JarUtil;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -10,19 +11,15 @@ import java.io.File;
 import static org.apache.commons.lang3.SystemUtils.*;
 
 @Slf4j
-@Builder
+@RequiredArgsConstructor
 public class ToxiproxyServer {
 
     @Getter
-    @Builder.Default
-    private String host = "localhost";
+    private final ToxiproxyServerConfiguration configuration;
 
-    @Getter
-    @Builder.Default
-    private int port = 8474;
-
-    @Builder.Default
-    private int timeout = 100;
+    public ToxiproxyServer() {
+        this(ToxiproxyServerConfiguration.builder().build());
+    }
 
     private Process process;
 
@@ -30,10 +27,11 @@ public class ToxiproxyServer {
         String binaryName = String.format("2.1.4/toxiproxy-server-%s", findOsSuffix());
         File executablePath = JarUtil.extractExecutableFromJar(binaryName);
 
-        process = new ProcessBuilder(executablePath.getCanonicalPath(), "-host", host, "-port", String.valueOf(port))
+        process = new ProcessBuilder(executablePath.getCanonicalPath(), "-host", configuration.getHost(), "-port", String.valueOf(configuration.port))
                 .start();
 
-        Thread.sleep(timeout);
+        Thread.sleep(configuration.timeout);
+        log.info("Started embedded toxiproxy server");
     }
 
     public void stop() throws InterruptedException {
@@ -57,4 +55,18 @@ public class ToxiproxyServer {
         throw new IllegalArgumentException("OS is not supported: " + OS_NAME);
     }
 
+    @Getter
+    @Builder
+    public static class ToxiproxyServerConfiguration {
+        @Getter
+        @Builder.Default
+        private String host = "localhost";
+
+        @Getter
+        @Builder.Default
+        private int port = 8474;
+
+        @Builder.Default
+        private int timeout = 1000;
+    }
 }

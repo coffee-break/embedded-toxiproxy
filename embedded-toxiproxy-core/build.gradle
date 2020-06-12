@@ -3,6 +3,7 @@ dependencies {
     api 'org.apache.commons:commons-lang3'
     api 'org.apache.commons:commons-exec'
     api 'commons-io:commons-io'
+    api 'org.awaitility:awaitility'
 
     testImplementation 'eu.rekawek.toxiproxy:toxiproxy-java'
 }

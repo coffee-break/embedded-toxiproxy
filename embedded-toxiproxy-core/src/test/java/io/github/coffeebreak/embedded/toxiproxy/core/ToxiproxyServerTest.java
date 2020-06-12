@@ -1,6 +1,7 @@
 package io.github.coffeebreak.embedded.toxiproxy.core;
 
 import eu.rekawek.toxiproxy.ToxiproxyClient;
+import io.github.coffeebreak.embedded.toxiproxy.core.ToxiproxyServer.ToxiproxyServerConfiguration;
 import org.junit.After;
 import org.junit.Test;
 
@@ -18,7 +19,7 @@ public class ToxiproxyServerTest {
 
     @Test
     public void shouldStartWithDefaultSettings() throws Exception {
-        toxiproxyServer = ToxiproxyServer.builder().build();
+        toxiproxyServer = new ToxiproxyServer();
         toxiproxyServer.start();
 
         ToxiproxyClient client = new ToxiproxyClient();
@@ -27,17 +28,18 @@ public class ToxiproxyServerTest {
 
     @Test
     public void shouldAllowToCustomiseHostAndPort() throws Exception {
-        toxiproxyServer = ToxiproxyServer.builder().host("localhost").port(getFreePort()).timeout(100).build();
+        ToxiproxyServerConfiguration configuration = ToxiproxyServerConfiguration.builder().host("localhost").port(getFreePort()).timeout(100).build();
+        toxiproxyServer = new ToxiproxyServer(configuration);
         toxiproxyServer.start();
 
-        ToxiproxyClient client = new ToxiproxyClient(toxiproxyServer.getHost(), toxiproxyServer.getPort());
+        ToxiproxyClient client = new ToxiproxyClient(toxiproxyServer.getConfiguration().getHost(), toxiproxyServer.getConfiguration().getPort());
         assertThat(client.version()).isEqualTo("2.1.4");
     }
 
 //    @Test(expected = IllegalArgumentException.class)
 //    public void shouldAaFailForUnsupportedOperatingSystem() throws Exception {
 //        System.setProperty("os.name", "unsupported");
-//        toxiproxyServer = ToxiproxyServer.builder().build();
+//        toxiproxyServer = new ToxiproxyServer(ToxiproxyServerConfiguration.builder().build());
 //        toxiproxyServer.start();
 //    }
 }

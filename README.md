@@ -21,7 +21,7 @@ Usage
 
 Running ToxiproxyServer is as simple as:
 ```java
-ToxiproxyServer toxiproxyServer = ToxiproxyServer.builder().build();
+ToxiproxyServer toxiproxyServer = new ToxiproxyServer();
 toxiproxyServer.start();
 // do some work
 toxiproxyServer.stop();
@@ -30,26 +30,21 @@ toxiproxyServer.stop();
 Or you can use junit rule as:
 ```java
 @ClassRule
-public static ToxiproxyServerRule toxiproxyServerRule = new ToxiproxyServerRule(ToxiproxyServer.builder().timeout(5000));
+public static ToxiproxyServerRule toxiproxyServerRule = new ToxiproxyServerRule(ToxiproxyServerConfiguration.builder().timeout(5000));
 ```
 
 Also a client junit rule has been provided to use as:
 ```java
-private final static ProxyConfiguration config = ProxyConfiguration.builder()
-        .name("database")
-        .host("localhost")
-        .listenPort(9124)
-        .upstreamPort(9123)
-        .build();
+    private final static ProxyConfiguration proxyConfiguration = ProxyConfiguration.builder()
+            .name("database")
+            .host("localhost")
+            .listenPort(9124)
+            .upstreamPort(9123)
+            .build();
 
-private static final ToxiproxyClientRule toxiproxyClientRule = new ToxiproxyClientRule(config);
-private static final SqlDatabaseServerRule embeddedDatabaseRule = new SqlDatabaseServerRule();
+    @ClassRule
+    public static final ToxiproxyRule databaseWithToxiproxy = new ToxiproxyRule(proxyConfiguration, new SqlDatabaseServerRule());
 
-@ClassRule
-public static TestRule databaseWithToxiproxy = RuleChain
-        .outerRule(new ToxiproxyServerRule(ToxiproxyServer.builder()))
-        .around(embeddedDatabaseRule)
-        .around(toxiproxyClientRule);
 
 ```
 
@@ -75,3 +70,6 @@ Changelog
 ### 0.1.0
  * Initial release
  
+ ### 0.2.0
+ * Add ToxiproxyRule for simplified setup
+  

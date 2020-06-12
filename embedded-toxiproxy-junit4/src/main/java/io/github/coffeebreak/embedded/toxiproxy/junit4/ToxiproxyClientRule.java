@@ -17,7 +17,8 @@ public class ToxiproxyClientRule extends ExternalResource {
     private Proxy proxy;
 
     @SneakyThrows
-    public ToxiproxyClientRule(ProxyConfiguration proxyConfiguration) {
+    public
+    ToxiproxyClientRule(ProxyConfiguration proxyConfiguration) {
         this.proxyConfiguration = proxyConfiguration;
         this.client = new ToxiproxyClient();
     }

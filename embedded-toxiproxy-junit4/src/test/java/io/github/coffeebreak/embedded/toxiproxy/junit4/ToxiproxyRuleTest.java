@@ -1,14 +1,12 @@
 package io.github.coffeebreak.embedded.toxiproxy.junit4;
 
 import eu.rekawek.toxiproxy.model.ToxicDirection;
-import io.github.coffeebreak.embedded.toxiproxy.core.ToxiproxyServer;
+import io.github.coffeebreak.embedded.toxiproxy.core.ToxiproxyServer.ToxiproxyServerConfiguration;
 import io.github.coffeebreak.embedded.toxiproxy.junit4.ToxiproxyClientRule.ProxyConfiguration;
 import io.github.coffeebreak.embedded.toxiproxy.junit4.utils.SqlDatabaseServerRule;
 import org.junit.After;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.junit.rules.RuleChain;
-import org.junit.rules.TestRule;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -18,7 +16,7 @@ import java.sql.Statement;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class ToxiproxyClientRuleTest {
+public class ToxiproxyRuleTest {
 
     private final static ProxyConfiguration config = ProxyConfiguration.builder()
             .name("database")
@@ -27,18 +25,12 @@ public class ToxiproxyClientRuleTest {
             .upstreamPort(9123)
             .build();
 
-    private static final ToxiproxyClientRule toxiproxyClientRule = new ToxiproxyClientRule(config);
-    private static final SqlDatabaseServerRule embeddedDatabaseRule = new SqlDatabaseServerRule();
-
     @ClassRule
-    public static TestRule databaseWithToxiproxy = RuleChain
-            .outerRule(new ToxiproxyServerRule(ToxiproxyServer.builder()))
-            .around(embeddedDatabaseRule)
-            .around(toxiproxyClientRule);
+    public static final ToxiproxyRule databaseWithToxiproxy = new ToxiproxyRule(ToxiproxyServerConfiguration.builder().build(), config, new SqlDatabaseServerRule());
 
     @After
     public void before() {
-        toxiproxyClientRule.clearToxics();
+        databaseWithToxiproxy.getClient().clearToxics();
     }
 
     @Test
@@ -61,7 +53,7 @@ public class ToxiproxyClientRuleTest {
 
         try(final Connection connection = DriverManager.getConnection(connectionUrl)) {
             try(final Statement statement = connection.createStatement()) {
-                toxiproxyClientRule.getProxy().toxics().timeout("mysql-timeout-toxic", ToxicDirection.DOWNSTREAM, 100);
+                databaseWithToxiproxy.getClient().getProxy().toxics().timeout("mysql-timeout-toxic", ToxicDirection.DOWNSTREAM, 100);
                 assertThatThrownBy(() -> {
                     try (final ResultSet resultSet = statement.executeQuery("SELECT 1") ) {
                         assertThat(resultSet.next()).isTrue();
