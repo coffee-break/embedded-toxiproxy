@@ -5,6 +5,9 @@ apply plugin: 'signing'
 scmVersion {
     tag { prefix = project.name }
     versionIncrementer 'incrementMinor'
+    tag {
+        versionSeparator.set("-")
+    }
 }
 project.version = project.findProperty('deployVersion') ?: scmVersion.version
 group = 'io.github.coffee-break'

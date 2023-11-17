@@ -15,6 +15,6 @@ public class ToxiproxyServerRuleTest {
     @Test
     public void shouldStartWithDefaultSettings() throws Exception {
         ToxiproxyClient client = new ToxiproxyClient();
-        assertThat(client.version()).isEqualTo("2.1.4");
+        assertThat(client.version()).contains("2.7.0");
     }
 }

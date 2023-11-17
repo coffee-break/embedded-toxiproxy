@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArchUtils;
 
 import java.io.File;
 
@@ -24,11 +25,15 @@ public class ToxiproxyServer {
     private Process process;
 
     public void start() throws Exception {
-        String binaryName = String.format("2.1.4/toxiproxy-server-%s", findOsSuffix());
+        String binaryName = String.format("2.7.0/toxiproxy-server-%s", findOsSuffix());
         File executablePath = JarUtil.extractExecutableFromJar(binaryName);
 
-        process = new ProcessBuilder(executablePath.getCanonicalPath(), "-host", configuration.getHost(), "-port", String.valueOf(configuration.port))
-                .start();
+        ProcessBuilder processBuilder = new ProcessBuilder(executablePath.getCanonicalPath(), "-host", configuration.getHost(), "-port", String.valueOf(configuration.port));
+        if (configuration.inheritIO) {
+            process = processBuilder.inheritIO().start();
+        } else {
+            process = processBuilder.start();
+        }
 
         Thread.sleep(configuration.timeout);
         log.info("Started embedded toxiproxy server");
@@ -45,9 +50,18 @@ public class ToxiproxyServer {
     private String findOsSuffix() {
         log.debug("Finding Os specific suffix for: {} and {}", OS_NAME, OS_ARCH);
         if (IS_OS_MAC) {
-            return "darwin-amd64";
+            if (ArchUtils.getProcessor().isAarch64()) {
+                return "darwin-arm64";
+            } else {
+                return "darwin-amd64";
+            }
         } else if (IS_OS_LINUX) {
-            return "linux-amd64";
+            if (ArchUtils.getProcessor().isAarch64()) {
+                return "linux-arm64";
+            } else {
+                return "linux-amd64";
+            }
+
         } else if (IS_OS_WINDOWS) {
             return "windows-amd64.exe";
         }
@@ -68,5 +82,8 @@ public class ToxiproxyServer {
 
         @Builder.Default
         private int timeout = 1000;
+
+        @Builder.Default
+        private boolean inheritIO = false;
     }
 }

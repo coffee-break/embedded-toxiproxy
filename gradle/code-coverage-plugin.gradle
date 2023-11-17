@@ -2,9 +2,9 @@ apply plugin: 'jacoco'
 
 jacocoTestReport {
     reports {
-        xml.enabled true
+        xml.required = true
         xml.destination file("${rootProject.buildDir}/reports/jacoco/report.xml")
-        csv.enabled false
+        csv.required = false
         html.destination file("${buildDir}/jacocoHtml")
     }
 }

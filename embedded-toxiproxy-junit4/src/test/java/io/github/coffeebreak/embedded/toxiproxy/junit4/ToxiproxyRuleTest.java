@@ -1,7 +1,6 @@
 package io.github.coffeebreak.embedded.toxiproxy.junit4;
 
 import eu.rekawek.toxiproxy.model.ToxicDirection;
-import io.github.coffeebreak.embedded.toxiproxy.core.ToxiproxyServer.ToxiproxyServerConfiguration;
 import io.github.coffeebreak.embedded.toxiproxy.junit4.ToxiproxyClientRule.ProxyConfiguration;
 import io.github.coffeebreak.embedded.toxiproxy.junit4.utils.SqlDatabaseServerRule;
 import org.junit.After;

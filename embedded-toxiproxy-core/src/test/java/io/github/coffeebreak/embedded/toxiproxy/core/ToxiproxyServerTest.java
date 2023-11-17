@@ -23,17 +23,22 @@ public class ToxiproxyServerTest {
         toxiproxyServer.start();
 
         ToxiproxyClient client = new ToxiproxyClient();
-        assertThat(client.version()).isEqualTo("2.1.4");
+        assertThat(client.version()).contains("2.7.0");
     }
 
     @Test
     public void shouldAllowToCustomiseHostAndPort() throws Exception {
-        ToxiproxyServerConfiguration configuration = ToxiproxyServerConfiguration.builder().host("localhost").port(getFreePort()).timeout(100).build();
+        ToxiproxyServerConfiguration configuration = ToxiproxyServerConfiguration.builder()
+                .host("localhost")
+                .port(getFreePort())
+                .timeout(1000)
+                .inheritIO(true)
+                .build();
         toxiproxyServer = new ToxiproxyServer(configuration);
         toxiproxyServer.start();
 
         ToxiproxyClient client = new ToxiproxyClient(toxiproxyServer.getConfiguration().getHost(), toxiproxyServer.getConfiguration().getPort());
-        assertThat(client.version()).isEqualTo("2.1.4");
+        assertThat(client.version()).contains("2.7.0");
     }
 
 //    @Test(expected = IllegalArgumentException.class)
