@@ -9,30 +9,29 @@ import org.junit.runners.model.Statement;
 
 public class ToxiproxyRule implements TestRule {
 
-    private final ToxiproxyServerRule server;
-    private final ToxiproxyClientRule client;
-    private final TestRule target;
+  private final ToxiproxyServerRule server;
+  private final ToxiproxyClientRule client;
+  private final TestRule target;
 
-    public ToxiproxyRule(ProxyConfiguration proxyConfiguration, TestRule target) {
-        this(ToxiproxyServerConfiguration.builder().build(), proxyConfiguration, target);
-    }
+  public ToxiproxyRule(ProxyConfiguration proxyConfiguration, TestRule target) {
+    this(ToxiproxyServerConfiguration.builder().build(), proxyConfiguration, target);
+  }
 
-    public ToxiproxyRule(ToxiproxyServerConfiguration configuration, ProxyConfiguration proxyConfiguration, TestRule target) {
-        this.server = new ToxiproxyServerRule(configuration);
-        this.client = new ToxiproxyClientRule(proxyConfiguration);
-        this.target = target;
-    }
+  public ToxiproxyRule(
+      ToxiproxyServerConfiguration configuration,
+      ProxyConfiguration proxyConfiguration,
+      TestRule target) {
+    this.server = new ToxiproxyServerRule(configuration);
+    this.client = new ToxiproxyClientRule(proxyConfiguration);
+    this.target = target;
+  }
 
-    @Override
-    public Statement apply(Statement base, Description description) {
-        return RuleChain
-                .outerRule(server)
-                .around(target)
-                .around(client)
-                .apply(base, description);
-    }
+  @Override
+  public Statement apply(Statement base, Description description) {
+    return RuleChain.outerRule(server).around(target).around(client).apply(base, description);
+  }
 
-    public ToxiproxyClientRule getClient() {
-        return client;
-    }
+  public ToxiproxyClientRule getClient() {
+    return client;
+  }
 }

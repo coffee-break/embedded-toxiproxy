@@ -7,20 +7,20 @@ import org.junit.rules.ExternalResource;
 
 public class ToxiproxyServerRule extends ExternalResource {
 
-    private final ToxiproxyServer toxiproxyServer;
+  private final ToxiproxyServer toxiproxyServer;
 
-    public ToxiproxyServerRule(ToxiproxyServerConfiguration configuration) {
-        this.toxiproxyServer = new ToxiproxyServer(configuration);
-    }
+  public ToxiproxyServerRule(ToxiproxyServerConfiguration configuration) {
+    this.toxiproxyServer = new ToxiproxyServer(configuration);
+  }
 
-    @Override
-    protected void before() throws Throwable {
-        toxiproxyServer.start();
-    }
+  @Override
+  protected void before() throws Throwable {
+    toxiproxyServer.start();
+  }
 
-    @SneakyThrows
-    @Override
-    protected void after() {
-        toxiproxyServer.stop();
-    }
+  @SneakyThrows
+  @Override
+  protected void after() {
+    toxiproxyServer.stop();
+  }
 }
