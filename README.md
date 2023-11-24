@@ -12,7 +12,7 @@ Maven Central:
 <dependency>
   <groupId>io.github.coffee-break</groupId>
   <artifactId>embedded-toxiproxy-junit4</artifactId>
-  <version>0.1.0</version>
+  <version>0.3.0</version>
 </dependency>
 ```
 
@@ -51,7 +51,7 @@ Also a client junit rule has been provided to use as:
 
 Toxiproxy version
 ==============
-Currently only 2.1.4 is provided
+Currently only 2.7.0 is provided
 
 
 License
@@ -72,4 +72,6 @@ Changelog
  
  ### 0.2.0
  * Add ToxiproxyRule for simplified setup
-  
+
+### 0.3.0
+ * Bump dependencies (toxiproxy to 2.7.0)
